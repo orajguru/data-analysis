@@ -1,0 +1,56 @@
+library(data.table)
+library(tidytext)
+library(ggplot2)
+library(slam)
+library(tm)
+library(NLP)
+library(caret)
+library(e1071)
+library(rtweet)
+library(dplyr)
+library(tm) 
+library(SnowballC) 
+library(FeatureHashing)
+library(Matrix)
+library(xgboost)
+library(tidyverse) 
+library(wordcloud) 
+library(ggplot2) 
+
+data = fread("/Users/Ishpreet/Documents/R/Final Training Data Set-twitter.csv")
+#head(data)
+datas=data%>%select(label,tweet) 
+#head(datas) 
+round(prop.table(table(datas$label)),2)
+corpus = VCorpus(VectorSource(datas$tweet)) 
+corpus = tm_map(corpus, content_transformer(tolower)) 
+corpus = tm_map(corpus, removeNumbers) 
+corpus = tm_map(corpus, removePunctuation) 
+corpus = tm_map(corpus, removeWords, stopwords("english")) 
+corpus = tm_map(corpus, stemDocument) 
+corpus = tm_map(corpus, stripWhitespace) 
+as.character(corpus[[1]])
+
+dtm = DocumentTermMatrix(corpus) 
+dtm 
+dim(dtm) 
+dtm = removeSparseTerms(dtm, 0.999) 
+dim(dtm)
+
+install.packages("RColorBrewer") 
+#wordcloud requires RColorBrewer 
+nohate = subset(datas,label==0) 
+wordcloud(nohate$tweet, max.words = 100, colors = "blue") 
+hate = subset(datas,label==1) 
+wordcloud(hate$tweet, max.words = 100, colors = "purple")
+
+sparse_matrix <- sparse.model.matrix(Improved~.-1, data = datas)
+#head(sparse_matrix)
+
+bst <- xgboost(data = sparse_matrix, label = output_vector, max.depth = 4,
+               eta = 1, nthread = 2, nrounds = 10,objective = "binary:logistic")
+
+importance <- xgb.importance(feature_names = sparse_matrix@Dimnames[[2]], model = bst)
+head(importance)
+xgb.plot.importance(importance_matrix = importance)
+
