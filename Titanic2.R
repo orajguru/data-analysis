@@ -8,7 +8,7 @@ library(rattle)
 library(ElemStatLearn)
 #set.seed(1234) reason for getting different outputs
 set.seed(123)
-data = fread("/Users/omkar/Documents/EAS508SDM/titanic_ML.csv")
+data = fread("/Users/Documents/titanic_ML.csv")
 imputed_data = mice(data)
 data = complete(imputed_data, 1)
 data2 = data[, c("Age","Fare","Survived")]
