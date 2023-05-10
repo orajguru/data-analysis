@@ -17,7 +17,7 @@ library(tidyverse)
 library(wordcloud) 
 library(ggplot2) 
 
-data = fread("/Users/Ishpreet/Documents/R/Final Training Data Set-twitter.csv")
+data = fread("/Users/Documents/R/Final Training Data Set-twitter.csv")
 #head(data)
 datas=data%>%select(label,tweet) 
 #head(datas) 
