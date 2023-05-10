@@ -8,7 +8,7 @@ library(rattle)
 library(ElemStatLearn)
 #set.seed(1234) reason for getting different outputs
 set.seed(123)
-data = fread("/Users/omkar/Documents/EAS508SDM/titanic_ML.csv")
+data = fread("/Users/Documents/titanic_ML.csv")
 
 summary(data)
 table(is.na(data))
